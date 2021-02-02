@@ -1,0 +1,54 @@
+h1 {
+text-align: center;
+color: rgb(3, 4, 88);
+}
+
+body {
+  text-align: center;
+  background-image: linear-gradient(to right, rgb(104, 165, 245), white)
+}
+
+button {
+  background-color: white;
+  color: rgb(79, 83, 85);
+  border: 2px solid lightskyblue;
+  text-align: center;
+  text-decoration: none;
+  padding: 10px 20px;
+  font-family: sans-serif;
+  font-size: 14px;  
+}
+
+button:hover {
+  background-color: lightskyblue;
+  color: white;
+}
+
+.todo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo-items {
+  min-width: 30%;
+  list-style: none;
+}
+
+.todo {
+  margin: 0.2rem;
+  background: white;
+  color: black;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo li {
+  flex: 1;
+}
+
+.complete-btn {
+  padding: 1rem;
+}
