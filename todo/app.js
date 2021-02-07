@@ -1,5 +1,5 @@
 let textBox = document.querySelector(".input-text");
-let addButton = document.querySelector(".todo-button");
+let addButton = document.querySelector(".btn");
 let list = document.querySelector(".todo-list");
 let ul = document.querySelector(".todo-items");
 let todos = document.querySelectorAll(".todo-item");
@@ -19,7 +19,8 @@ function createTodo(div) {
 // create the completed button 
 function createCompleteBut(div) {
   const completedBut = document.createElement("button");
-  completedBut.classList.add("complete-btn");
+  completedBut.classList.add("btn");
+  completedBut.classList.add("btn-success");
   completedBut.setAttribute("id", `button${counters.butNum += 1}`);
   completedBut.textContent = 'complete';
   div.appendChild(completedBut);
