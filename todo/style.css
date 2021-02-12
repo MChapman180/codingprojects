@@ -1,4 +1,19 @@
-h1 {
+
+.checked {
+  text-decoration: line-through;
+}
+
+.form-check-input {
+  margin-top: 20px;
+}
+
+.btn-outline-success {
+margin-left: 30px;
+margin-top: 10px;
+} 
+
+
+/* h1 {
 text-align: center;
 color: rgb(3, 4, 88);
 }
@@ -30,11 +45,11 @@ button:hover {
   align-items: center;
 }
 
-.todo-items {
+/* .todo-items {
   min-width: 30%;
   list-style: none;
-}
-
+} */
+/* 
 .todo {
   margin: 0.2rem;
   background: white;
@@ -55,4 +70,4 @@ button:hover {
 
 .todo-item.checked {
 color: red;
-}
+} */ 
