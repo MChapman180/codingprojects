@@ -1,31 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Todo List</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Todo List</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="container border">
-  <div class="py-5">
-  <h1 class="text-primary">Todo List</h1>
-</div>
-<div class="row text-center">
-  <div class="col-sm-6 text-center">
-    <input type="text" class="form-control" id="input-text" placeholder="type todo here">
-  <button type="button" class="btn btn-primary">Add</button>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-primary mt-2">
+      <div class="container-fluid">
+        <span class="navbar-brand mx-auto h1">Todo List</span>
+      </div>
+    </nav>
+    <div class="container mt-3">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="input-text"
+          placeholder="enter todo item here"
+        />
+        <div class="input-group-append">
+          <button type="button" class="btn btn-primary" id="addBtn">Add</button>
+        </div>
+      </div>
+    </div>
 
-<div class="form-check" id="todo">
-</div>
-</div>
-</div>
-</div>
-  <script src="app.js"></script>
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
+    <div class="container mt-3" id="todo-div">
+      <h6>Tasks Pending</h6>
+    </div>
+
+    <div class="modal fade" id="completeModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Todo Alert</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Do you want to complete this todo item?</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              No
+            </button>
+            <button type="button" class="btn btn-primary yes" data-dismiss="modal">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 
+<div class="modal fade" id="completeModal" aria-hidden="true" tabindex="-1" aria-labelledby="completeTodo">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="todoCompleteLabel">Delete Todo?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+      </div>
+      <div class="modal-body">
+              hello
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+          <button type="button" class="btn btn-primary">Yes</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+    <!-- alternative way of doing the list using rows and columns
+<div class="container mt-3"> 
+  <h6>Tasks Pending</h6>
+  <div class="form-row">
+    <div class="col-md-10 mt-2">
+      <input type="text" class="form-control" readonly>
+    </div>
+      <div class="col col-lg-2 mt-2">
+        <button type="button" class="btn btn-secondary">Complete</button>
+      </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-10 mt-2">
+      <input type="text" class="form-control" readonly>
+    </div>
+      <div class="col col-lg-2 mt-2">
+        <button type="button" class="btn btn-secondary">Complete</button>
+      </div>
+  </div>
+</div> -->
+
+    <script src="app.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
