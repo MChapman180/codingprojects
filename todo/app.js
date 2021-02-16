@@ -23,7 +23,7 @@ function createTodo(text) {
   todoDiv.innerHTML += `<div class="input-group mb-3">
   <input type="text" class="form-control" id="todo${counter.todos}" value="${text}" readonly>
   <div class="input-group-append completeBtns">
-  <button type="button" class="btn btn-secondary completeBtn" data-toggle="modal" data-target="#completeModal" id="btn${counter.buttons}">Complete</button>
+  <button type="button" class="btn btn-success completeBtn" data-toggle="modal" data-target="#completeModal" id="btn${counter.buttons}">Complete</button>
 </div>
 </div>
 </div>`;
@@ -36,13 +36,13 @@ todoContainer.onclick = function (event) {
     const element = event.target;
     if (element.nodeName === 'BUTTON') {
       modalYes.addEventListener('click', () => {
-      element.innerHTML = 'Completed';
-      let todoTextBox = document.getElementById(`todo${String(element.id.match(/\d/g) || [])}`);
-      todoTextBox.classList.add('bg-info');
-      setTimeout(function() { 
-        todoTextBox.classList.remove('bg-info') 
-        }, 1000);
-      
+        document.getElementById(event.target.id).classList.remove('btn-success');
+        document.getElementById(event.target.id).classList.add('btn-secondary');
+        element.innerHTML = 'Completed';
+        document.getElementById(event.target.id).disabled = true;
+        let todoTextBox = document.getElementById(`todo${String(element.id.match(/\d/g) || [])}`);
+        console.log(todoTextBox.id);
+        document.getElementById(todoTextBox.id).style.backgroundColor = "#ffd7d7";
     })   
     }
 }
