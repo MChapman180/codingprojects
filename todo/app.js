@@ -7,11 +7,14 @@ let todoDiv = document.querySelector("#todo-div");
 let inputText = document.querySelector("#input-text");
 let addBtn = document.querySelector("#addBtn");
 let modalYes = document.querySelector(".yes");
+let currentTodo;
 
 let counter = {
   todos: 0,
   completeButtons: 0,
   editButtons: 0,
+  div: 0,
+  badge: 0
 };
 
 // take the input from the text input box
@@ -22,12 +25,17 @@ addBtn.addEventListener("click", function () {
   }
 });
 
-//if the add button is pressed, add the text from the input to a list item in the todo div
-function createTodo(text) {
+function updateCounters() {
   counter.todos += 1;
   counter.completeButtons += 1;
   counter.editButtons += 1;
-  todoDiv.innerHTML += `<div class="input-group mb-3">
+  counter.div += 1;
+}
+
+//if the add button is pressed, add the text from the input to a list item in the todo div
+function createTodo(text) {
+  updateCounters();
+  todoDiv.innerHTML += `<div class="input-group mb-3" id="div${counter.div}">
   <input type="text" class="form-control" id="todo${counter.todos}" value="${text}" readonly>
   <div class="input-group-append completeBtns">
   <button type="button" class="btn btn-success completeBtn" data-toggle="modal" data-target="#completeModal" id="btn${counter.completeButtons}">Complete</button>
@@ -46,17 +54,18 @@ todoContainer.onclick = function (event) {
     event.preventDefault();
     const element = event.target;
     if (element.nodeName === 'BUTTON') {
-      if(element.id.includes('btn')) {
+      if (element.id.includes('btn')) {
         addModal(element, event)
       } else {
-        if(element.id.includes('edit')) {
-          document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).disabled = false;
-          document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).classList.remove('btn-secondary');
-          document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).classList.add('btn-success');
-          document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).innerHTML = 'Complete';
-        editTodo(element, event);
-        } 
-    } 
+          if(element.id.includes('edit')) {
+            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).disabled = false;
+            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).classList.remove('btn-secondary');
+            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).classList.add('btn-success');
+            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).innerHTML = 'Complete';
+            currentTodo = retrieveTodo(element, 'todo').value
+            editTodo(element, event);
+          } 
+       } 
     }
 }
 
@@ -64,115 +73,60 @@ todoContainer.onclick = function (event) {
 function addModal(element, event) {
   
   modalYes.addEventListener('click', () => {
+    event.preventDefault(); 
     document.getElementById(event.target.id).classList.remove('btn-success');
     document.getElementById(event.target.id).classList.add('btn-secondary');
-    element.innerHTML = `Completed at ${new Date()}`;
     document.getElementById(event.target.id).disabled = true;
-    let todoTextBox = retrieveTodo(element);
+    let todoTextBox = retrieveTodo(element, 'todo');
     document.getElementById(todoTextBox.id).style.backgroundColor = "#ffd7d7";
     document.getElementById(todoTextBox.id).setAttribute('readonly', true);
-})
+    createTimeBadge(element, event);
+  })
 }
 // edit the todo when the edit button is pressed and change the innerHTML
 function editTodo(element, event) {
-  let todoText = retrieveTodo(element);
+  let todoText = retrieveTodo(element, 'todo');
   document.getElementById(todoText.id).style.backgroundColor = "white";
-  document.getElementById(todoText.id).setAttribute('readonly', false);
-  }
+  document.getElementById(todoText.id).readOnly = false;
+} 
 
-function retrieveTodo(ele) {
-  return document.getElementById(`todo${String(ele.id.match(/\d/g) || [])}`);
+function retrieveTodo(ele, id) {
+  return document.getElementById(`${id}${String(ele.id.match(/\d/g) || [])}`);
 }
 
+function createTimeBadge(element, event) {
+  let date = createDate();
+  let div = retrieveTodo(element, 'div');
+  let todo = retrieveTodo(element, 'todo');
+  let badge = retrieveTodo(element, 'badge');
+  // If there is not already a badge, create a new one
+  if (!String(div.innerHTML).includes('badge')) {
+    div.innerHTML += `<div class="input-group mb-3" id="badge${counter.todos}"> <span class="badge bg-secondary">Created ${date}</span> </div>`;
+    // else if there is not already an edit badge, and the current div has the correct badge id of the current target
+} else {
+  editBadge(element, div, date, badge);
+}
+}
 
-//attempt 2
-// // I couldn't work out how to use Bootstrap to 'strikethrough' the text when clicking the checkbox.
-// // I couldn't get the alignment of the buttons quite right too
+function editBadge(element, div, date, badge) {
+if (!String(div.innerHTML).includes('editBadge') && String(div.innerHTML).includes(`${retrieveTodo(element, 'badge')}`)) {
+  //if there is a value in the current todo, and the value is not equal to the value before editing
+if (todo.value.length > 0 && todo.value != currentTodo) {
+// add the editbadge below the createdbadge
+div.innerHTML += `<div class="input-group mb-3" id="editBadge${counter.todos}"> <span class="badge bg-secondary" id="badge${counter.todos}">Edited ${date}</span> </div>`;
+}
+}
+//if the badge has already been edited, then rather than adding a new edit badge, just edit the current one with the new date/time
+else {
+if(String(div.innerHTML).includes(`${retrieveTodo(element, 'badge')}`)) {
+badge.value = `Edited ${date}`;
+}
+}
+}
 
-// let addButton = document.querySelector(".btn-primary");
-// let textInput = document.querySelector("#input-text");
-// let todoDiv = document.querySelector("#todo");
-// let deleteButtons = document.querySelector('.btn-outline-success')
-// let counters = {
-//   todos: 0,
-//   buttons: 0
-// }
-
-// addButton.addEventListener('click', function(event) {
-//   event.preventDefault();
-//   let text = textInput.value;
-//   createTodo(text);
-//   textInput.value = '';
-// })
-
-// function createTodo(todo) {
-//     if (textInput.value.length > 0) {
-//       counters.todos += 1;
-//       counters.buttons += 1;
-//       let input = `<input class="form-check-input" type="checkbox" value="" id="todo-item${counters.todos}">${todo}`;
-//       let button = `<button type="button" class="btn btn-outline-success btn-small" id="button${counters.buttons}">X</button>`;
-//       let label = `<label class="form-check-input" for="todo-item${counters.todos}"></label>`;
-//       todoDiv.innerHTML += `${input}${label}${button}<br>`;
-//     }
-// }
-
-// todoDiv.addEventListener('click', function(event) {
-//   if(event.target.tagName === 'BUTTON') {
-//     document.querySelector(`#todo-item${event.target.id.slice(-1)}`).classList = 'checked';
-//   };
-// })
-
-// todoDiv.addEventListener('click', function(event) {
-//   if(event.target.tagName === 'BUTTON') {
-//     document.querySelector(`#todo-item${event.target.id.slice(-1)}`).style.color = 'red';
-//   };
-// })
-
-//------------------------------------- attempt 1
-// let textBox = document.querySelector(".add-todo");
-// let addButton = document.querySelector(".btn");
-// let list = document.querySelector(".todo-list");
-// let ul = document.querySelector(".list-unstyled");
-// let todos = document.querySelectorAll(".list-group-item");
-// const counters = {
-//   butNum: 0,
-//   todoNum: 0
-// }
-
-// //create the todo list item and get the value from the textbox.
-// function createTodo(div) {
-//   const newTodo = document.createElement("li");
-//   newTodo.innerText = textBox.value;
-//   newTodo.classList.add("list-group-item");
-//   newTodo.setAttribute("id", `todo${counters.todoNum += 1}`);
-//   div.appendChild(newTodo);
-// }
-// // create the completed button
-// function createCompleteBut(div) {
-//   const completedBut = document.createElement("button");
-//   completedBut.classList.add("btn");
-//   completedBut.classList.add("btn-success");
-//   completedBut.setAttribute("id", `button${counters.butNum += 1}`);
-//   completedBut.textContent = 'complete';
-//   div.appendChild(completedBut);
-// }
-
-// // when the add button is clicked, get the value out of textBox
-// addButton.addEventListener('click', function(event) {
-//   event.preventDefault();
-//   if (textBox.value.length > 0) {
-//     const div = document.createElement("div");
-//     div.classList.add("todo");
-//     createTodo(div);
-//     createCompleteBut(div);
-//     ul.appendChild(div);
-//     textBox.value = '';
-//     }
-// })
-
-// ul.addEventListener('click', function(event) {
-//   if(event.target.tagName === 'BUTTON')  {
-//     //slice the id from the button and add to the todo id to change the colour
-//     document.getElementById(`todo${event.target.id.slice(-1)}`).classList.toggle('checked');
-//   }
-// });
+function createDate() {
+  let d = new Date();
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`; 
+}
