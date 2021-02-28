@@ -3,11 +3,18 @@
 // 2. Whenever a todo item is created, somehow show at which time it is created.It should show "Created at 12/12/2021 at 6:16 am UTC" <example>
 // -X-
 
+// show the date and time of updation
+// read about CRUD
+// create an invisible badge
+// change its visibility if edit is pressed at least once
+// can make elements invisible by writing invisible in the class
+
+
 let todoDiv = document.querySelector("#todo-div");
 let inputText = document.querySelector("#input-text");
 let addBtn = document.querySelector("#addBtn");
 let modalYes = document.querySelector(".yes");
-let currentTodo;
+let editButtonPressed = false;
 
 let counter = {
   todos: 0,
@@ -45,8 +52,8 @@ function createTodo(text) {
   </div>
 </div>
 </div>`;
+editButtonPressed = false;
 }
-
 
 const todoContainer = document.querySelector("#todo-div");
 // if user clicks on the todo container, check if a button is clicked, and then add the modal if click is on complete, or edit otherwise.
@@ -58,12 +65,9 @@ todoContainer.onclick = function (event) {
         addModal(element, event)
       } else {
           if(element.id.includes('edit')) {
-            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).disabled = false;
-            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).classList.remove('btn-secondary');
-            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).classList.add('btn-success');
-            document.getElementById(`btn${String(element.id.match(/\d/g) || [])}`).innerHTML = 'Complete';
-            currentTodo = retrieveTodo(element, 'todo').value
-            editTodo(element, event);
+            editButtonPressed = true;
+            completeTodo(element)
+            editTodo(element);
           } 
        } 
     }
@@ -71,20 +75,39 @@ todoContainer.onclick = function (event) {
 
 // add the colour to the todo list when the complete button is pressed
 function addModal(element, event) {
-  
+  let editDate = retrieveTodo(element, 'editDate');
+  let date = createDate();
   modalYes.addEventListener('click', () => {
     event.preventDefault(); 
-    document.getElementById(event.target.id).classList.remove('btn-success');
-    document.getElementById(event.target.id).classList.add('btn-secondary');
-    document.getElementById(event.target.id).disabled = true;
-    let todoTextBox = retrieveTodo(element, 'todo');
-    document.getElementById(todoTextBox.id).style.backgroundColor = "#ffd7d7";
-    document.getElementById(todoTextBox.id).setAttribute('readonly', true);
-    createTimeBadge(element, event);
-  })
+    editButtons(event, element);
+    if (!editButtonPressed) {
+      createTimeBadge(element);
+  } else {
+    if(editDate) {
+      editDate.classList.remove('invisible'); 
+      editDate.textContent = `Edited ${date}`
+  } 
+}
+})
+}
+//edit the todo buttons so that the background goes read and they are read only 
+function editButtons(event, element) {
+  document.getElementById(event.target.id).classList.remove('btn-success');
+  document.getElementById(event.target.id).classList.add('btn-secondary');
+  document.getElementById(event.target.id).disabled = true;
+  let todoTextBox = retrieveTodo(element, 'todo');
+  document.getElementById(todoTextBox.id).style.backgroundColor = "#ffd7d7";
+  document.getElementById(todoTextBox.id).setAttribute('readonly', true);
+}
+
+function completeTodo(element) {
+  retrieveTodo(element, 'btn').classList.remove('btn-secondary');
+  retrieveTodo(element, 'btn').classList.add('btn-success');
+  retrieveTodo(element, 'btn').innerHTML = 'Complete';
+  retrieveTodo(element, 'btn').disabled = false;
 }
 // edit the todo when the edit button is pressed and change the innerHTML
-function editTodo(element, event) {
+function editTodo(element) {
   let todoText = retrieveTodo(element, 'todo');
   document.getElementById(todoText.id).style.backgroundColor = "white";
   document.getElementById(todoText.id).readOnly = false;
@@ -93,40 +116,21 @@ function editTodo(element, event) {
 function retrieveTodo(ele, id) {
   return document.getElementById(`${id}${String(ele.id.match(/\d/g) || [])}`);
 }
-
-function createTimeBadge(element, event) {
+//create the badge with the date
+function createTimeBadge(element) {
   let date = createDate();
   let div = retrieveTodo(element, 'div');
-  let todo = retrieveTodo(element, 'todo');
-  let badge = retrieveTodo(element, 'badge');
-  // If there is not already a badge, create a new one
-  if (!String(div.innerHTML).includes('badge')) {
-    div.innerHTML += `<div class="input-group mb-3" id="badge${counter.todos}"> <span class="badge bg-secondary">Created ${date}</span> </div>`;
-    // else if there is not already an edit badge, and the current div has the correct badge id of the current target
-} else {
-  editBadge(element, div, date, badge);
-}
-}
-
-function editBadge(element, div, date, badge) {
-if (!String(div.innerHTML).includes('editBadge') && String(div.innerHTML).includes(`${retrieveTodo(element, 'badge')}`)) {
-  //if there is a value in the current todo, and the value is not equal to the value before editing
-if (todo.value.length > 0 && todo.value != currentTodo) {
-// add the editbadge below the createdbadge
-div.innerHTML += `<div class="input-group mb-3" id="editBadge${counter.todos}"> <span class="badge bg-secondary" id="badge${counter.todos}">Edited ${date}</span> </div>`;
-}
-}
-//if the badge has already been edited, then rather than adding a new edit badge, just edit the current one with the new date/time
-else {
-if(String(div.innerHTML).includes(`${retrieveTodo(element, 'badge')}`)) {
-badge.value = `Edited ${date}`;
-}
-}
+  if (!String(div.innerHTML).includes(`Created`)) {
+    div.innerHTML += `<div class="input-group mb-3" id="badge${counter.todos}"> <span class="badge bg-secondary mr-1">Created ${date}</span> 
+    <span class="badge bg-secondary invisible ml-1" id="editDate${counter.todos}">Edited ${date}</span> </div>`;
+  } 
 }
 
 function createDate() {
   let d = new Date();
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`; 
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, 0)}`; 
 }
+
+
